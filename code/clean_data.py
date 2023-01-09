@@ -31,48 +31,54 @@ def clean_data(df):
     df.isna().sum()
     df.isnull().any()
     # Null values are maked either with [] for arrays and ? for strings therefore, there aren't any null values
-    
+
     # Drop columns with personal information unecessary for data analysis
     df.drop(['Description', 'Telephone', 'Website', 'Email', 'Hiking association', 'Guard name(s)',
              'Acces', 'Zones', 'Emplacement'], axis=1, inplace=True)
-    
+
     # Split place list in country, region, place
     df_placelist = df['Place list'].str.split(",", n = 3, expand = True)
-    
-    placelist = 'Country', 'Region', 'Place'
-    
+
+    placelist = 'country', 'region', 'place'
+
     for i, placelist in enumerate(placelist):
         df[placelist] = df_placelist[i]
         df[placelist] = df[placelist].str.replace('Shelter in ', '')
         df[placelist] = df[placelist].str.replace('Campsite in ', '')
-    
+
     df.drop(columns =['Place list'], inplace = True)
-    
+
     # Split coordinates in latitude and longitude
     df['Coordinates'] = df['Coordinates'].str.replace('Latitude: ', '')
-    
+
     df_coordinates = df['Coordinates'].str.split("Longitude: ", n = 2, expand = True)
-    
-    for i, placelist in enumerate(placelist):
-        df[placelist] = df_placelist[i]
         
-    df['Latitude']= df_coordinates[0]
-    df['Latitude'] = df['Latitude'].astype('float64') 
-    
-    df['Longitude']= df_coordinates[1]
-    df['Longitude'] = df['Longitude'].astype('float64') 
-    
+    df['latitude']= df_coordinates[0]
+    df['latitude'] = df['latitude'].astype('float64') 
+
+    df['longitude']= df_coordinates[1]
+    df['longitude'] = df['longitude'].astype('float64') 
+
     df.drop(columns =['Coordinates'], inplace = True)
-   
+
     # Check unique values for each variable
     for column in df.columns:
         print(column + ": ", df[column].nunique())
-    
+
     # Place type and fee are binary variables, name is unique for each row
     # Capacity, altitude and coordinates numerical and the rest are cathegorical
-    
 
-    
+
+    # Change binary variables for True or False (0, 1)
+    # Fee 0 is free 1 is paid
+    df['Fee'].replace(['Paid','Free to use'],[0,1],inplace=True)
+    # Place type 0 for Shelter and 1 for Campsite
+    df['Place type'].replace(['Shelter','Campsite'],[0,1],inplace=True)
+
+    # Change name columns
+    df.rename(columns = {'Place type': 'place_type','Name':'name', 'Capacity':'capacity', 'Fee':'is_free', 'Altitude':'altitude', 'Services':'num_services', 
+                         'Nearby routes':'num_nearby_routes'}, inplace = True)
+
 
 
 def main():    
