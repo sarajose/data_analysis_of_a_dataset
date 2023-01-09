@@ -1,10 +1,14 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Jan  9 16:37:50 2023
+Created on Mon Jan 09, 2023
+@author: Sara Jose, Joan Peracaula
 
-@author: sara-
 """
 
 import pandas as pd
 
-print("Hello")
+def main():
+    pass
+
+if __name__ == "__main__":
+    main()
