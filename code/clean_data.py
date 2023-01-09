@@ -25,7 +25,7 @@ def load_data():
 def clean_data(df):
     # Dataset information
     df.info()
-    
+
     # Check for null values
     # Mirar si hi ha valors nuls
     df.isna().sum()
@@ -45,6 +45,9 @@ def clean_data(df):
         df[placelist] = df_placelist[i]
         df[placelist] = df[placelist].str.replace('Shelter in ', '')
         df[placelist] = df[placelist].str.replace('Campsite in ', '')
+        df[placelist] = df[placelist].str.replace('[', '')
+        df[placelist] = df[placelist].str.replace(']', '')
+        df[placelist] = df[placelist].str.replace('\'', '')
 
     df.drop(columns =['Place list'], inplace = True)
 
@@ -76,15 +79,34 @@ def clean_data(df):
     df['Place type'].replace(['Shelter','Campsite'],[0,1],inplace=True)
 
     # Change name columns
-    df.rename(columns = {'Place type': 'place_type','Name':'name', 'Capacity':'capacity', 'Fee':'is_free', 'Altitude':'altitude', 'Services':'num_services', 
-                         'Nearby routes':'num_nearby_routes'}, inplace = True)
+    df.rename(columns = {'Place type': 'place_type','Name':'name', 'Capacity':'capacity', 'Fee':'is_free', 'Altitude':'altitude'}, inplace = True)
 
+    # Count the total number of routes of each place
+    df['num_nearby_routes'] = df['Nearby routes'].str.split(",")
+    df['num_nearby_routes']=[len(i) for i in df['num_nearby_routes']]
 
+    # Change number of routes of empty values from 1 to 0 as they are incorreclty counted
+    df.loc[df['Nearby routes'] == '[]', 'num_nearby_routes'] = 0
 
-def main():    
-    df = load_data()
-    clean_data(df)
+    # Count the total number of services of each place
+    df['num_services'] = df['Services'].str.split(",")
+    df['num_services']=[len(i) for i in df['num_services']]
 
+    # Idem for number of services
+    df.loc[df['Services'] == '[]', 'num_services'] = 0
+
+    # Drop Services and Nearby routes columns
+    df.drop(['Services', 'Nearby routes'], axis=1, inplace=True)
+
+    # Delete unecessay characters and change columns to the right datatype for each column that hasn't been changed
+    # capacity
+    df['capacity'] = df['capacity'].str.replace('beds', '')
+    df['capacity'] = df['capacity'].str.replace('?', '0')
+    df['capacity'] = df['capacity'].astype('int64') 
+
+    #altitude
+    df['altitude'] = df['altitude'].str.replace('m', '')
+    df['altitude'] = df['altitude'].str.replace('?', '0')
+    df['altitude'] = df['altitude'].astype('int64') 
     
-if __name__ == "__main__":
-    main()
+    return df
