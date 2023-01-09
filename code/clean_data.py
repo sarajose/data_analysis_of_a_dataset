@@ -37,9 +37,26 @@ def clean_data(df):
              'Acces', 'Zones', 'Emplacement'], axis=1, inplace=True)
     
     # Split place list in country, region, place
-    df_new = df['Place list'].str.split(",", n = 3, expand = True)
-
+    df_placelist = df['Place list'].str.split(",", n = 3, expand = True)
     
+    placelist = 'Country', 'Region', 'Place'
+    
+    for i, placelist in enumerate(placelist):
+        df[placelist] = df_placelist[i]
+        df[placelist] = df[placelist].str.replace('Shelter in ', '')
+        df[placelist] = df[placelist].str.replace('Campsite in ', '')
+    
+    df.drop(columns =['Place list'], inplace = True)
+    
+    # Split coordinates in latitude and longitude
+    df['Coordinates'] = df['Coordinates'].str.replace('Latitude: ', '')
+
+    df_coordinates = df['Coordinates'].str.split("Longitude: ", n = 2, expand = True)
+    df['Latitude']= df_coordinates[0]
+    df['Longitude']= df_coordinates[1]
+
+    df.drop(columns =['Coordinates'], inplace = True)
+   
     # Check unique values for each variable
     for column in df.columns:
         print(column + ": ", df[column].nunique())
