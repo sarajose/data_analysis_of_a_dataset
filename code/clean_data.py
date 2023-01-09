@@ -50,11 +50,18 @@ def clean_data(df):
     
     # Split coordinates in latitude and longitude
     df['Coordinates'] = df['Coordinates'].str.replace('Latitude: ', '')
-
+    
     df_coordinates = df['Coordinates'].str.split("Longitude: ", n = 2, expand = True)
+    
+    for i, placelist in enumerate(placelist):
+        df[placelist] = df_placelist[i]
+        
     df['Latitude']= df_coordinates[0]
+    df['Latitude'] = df['Latitude'].astype('float64') 
+    
     df['Longitude']= df_coordinates[1]
-
+    df['Longitude'] = df['Longitude'].astype('float64') 
+    
     df.drop(columns =['Coordinates'], inplace = True)
    
     # Check unique values for each variable
