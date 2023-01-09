@@ -7,12 +7,13 @@ Created on Mon Jan 09, 2023
 
 import clean_data
 
-
-def main():    
+def main():  
+    # Load dataser
     df = clean_data.load_data()
     
-    # Select data
-    # Clean data
+    # Select and clean data
+    cleaned_df = clean_data.clean_data(df)
+    
     # Data analysis
     
     # Graphs
