@@ -1,15 +1,7 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Mon Jan  9 17:48:40 2023
 
-@author: sara-
-"""
-
-import sys
-import os
 import pandas as pd
 import numpy as np
-    
 
 
 def clean_data(df):
@@ -100,3 +92,4 @@ def clean_data(df):
     df['altitude'] = df['altitude'].astype('int64') 
     
     return df
+    

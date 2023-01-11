@@ -1,9 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Mon Jan 09, 2023
-@author: Sara Jose, Joan Peracaula
 
-"""
 import os 
 import sys
 import pandas as pd
@@ -21,8 +17,8 @@ FINAL_DATASET_PATH = os.path.join(PROJECT_ROOT_PATH, "data/final_shelters_and_ca
 def main():  
 
     # Load initial dataset
-    df = pd.read_csv(INITIAL_DATASET_PATH)
-    
+    df = pd.read_csv(INITIAL_DATASET_PATH, index_col=0)
+
     # Select and clean data
     df = clean_data.clean_data(df)
 
@@ -36,4 +32,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
