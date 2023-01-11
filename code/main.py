@@ -20,11 +20,11 @@ def main():
     df = pd.read_csv(INITIAL_DATASET_PATH, index_col=0)
 
     # Select and clean data
-    df = clean_data.clean_data(df)
+    clean_df = clean_data.clean_data(df)
 
     # Data integration
     create_custom_DEM() # Create a custom DEM of the geographical area of the dataset
-    final_df = integrate_elevations(df) # Fill empty altitudes using the DEM and the data coords
+    final_df = integrate_elevations(clean_df) # Fill empty altitudes using the DEM and the data coords
     
     # Save the cleaned and preprocessed dataset, ready to analyse
     final_df.to_csv(FINAL_DATASET_PATH)
