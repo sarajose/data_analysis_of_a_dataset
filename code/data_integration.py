@@ -57,6 +57,10 @@ def get_elevation(lat, lon, alt):
     with rasterio.open(DEM_PATH) as dem:
         vals = dem.sample(coords)
         elevation = next(vals)[0]
+
+        if elevation == -32768: # For extreme values, set altitude as None (unknown)
+            elevation = None
+            
         return elevation
         
 
