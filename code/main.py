@@ -18,6 +18,7 @@ def main():
 
     # Load initial dataset
     df = pd.read_csv(INITIAL_DATASET_PATH, index_col=0)
+    print("Initial dataset loaded from path: " + INITIAL_DATASET_PATH)
 
     # Select and clean data
     clean_df = clean_data.clean_data(df)
@@ -28,6 +29,7 @@ def main():
     
     # Save the cleaned and preprocessed dataset, ready to analyse
     final_df.to_csv(FINAL_DATASET_PATH)
+    print("Final dataset saved in path: " + FINAL_DATASET_PATH)
 
 
 if __name__ == "__main__":
