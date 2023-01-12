@@ -2,6 +2,7 @@ import os
 import sys
 from rasterio.merge import merge
 import rasterio
+import numpy as np
 from pathlib import Path
 
 
@@ -21,6 +22,13 @@ DEM_PATH = os.path.join(PROJECT_ROOT_PATH, "data/custom_DEM.tif")
 
 
 def create_custom_DEM():
+
+    print("\n\n * * * START OF THE DATA INTEGRATION PROCESS * * * \n")
+    print("As we have seen, there are many unknown altitude and capacity values in our data.\n")
+    print("In this step we will fill empty altitude values integrating the data from a secondary realiable source:\n")
+    
+    print("\n- First, we will create a DEM image that covers our dataset geographical area")
+    print("\nFrom multiple small regions DEM files downloaded from a realiable source, we merge them into a single DEM file\n")
 
     # Read individual raster files and merge them in a single raster image
     raster_files = list(Path(RASTER_DATA_PATH).iterdir())
@@ -48,8 +56,8 @@ def create_custom_DEM():
 
 def get_elevation(lat, lon, alt):
 
-    # If the altitude is not 0, keep the original value
-    if alt != 0: 
+    # If the altitude is not NaN, keep the original value
+    if not np.isnan(alt): 
         return alt
         
     # If it is 0, obtain and return the altitude value from the DEM
@@ -60,12 +68,16 @@ def get_elevation(lat, lon, alt):
 
         if elevation == -32768: # For extreme values, set altitude as None (unknown)
             elevation = None
-            
+
         return elevation
         
 
 def integrate_elevations(df):
 
+    print("\n- Then, for each NaN altitude value we get the (approximate) elevation from the DEM file")
     # Apply get_elevation function to all rows of the dataframe
     df["altitude"] = df.apply(lambda row : get_elevation(row["latitude"], row["longitude"], row["altitude"]), axis = 1)
+
+    print("   · Number of rows with unknown altitude value after Data Integration: " + str(df['altitude'].isna().sum()) + "\n\n")
+
     return df
